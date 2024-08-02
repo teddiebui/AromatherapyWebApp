@@ -5,6 +5,7 @@ This is a coursework project about Java Web Development.
 Technologies & Tools:
  - Project build with Maven tool
  - Pure Servlet technology
+ - JUnit 4
  - HikariCP datasource + JDBC connection
  - SQL with SQL Server 2022
  - Web UI: HTML/CSS with Bootstrap
