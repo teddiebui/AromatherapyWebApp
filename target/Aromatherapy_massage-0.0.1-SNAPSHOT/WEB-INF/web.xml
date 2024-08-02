@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	id="WebApp_ID" version="4.0">
+
+	<!-- Database configuration -->
+	<context-param>
+        <param-name>jdbc/url</param-name>
+        <param-value>jdbc:sqlserver://localhost:1433;databaseName=auromatherapy_massage</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbc/username</param-name>
+        <param-value>binh</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbc/password</param-name>
+        <param-value>1234</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbc/maxPoolSize</param-name>
+        <param-value>10</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jdbc/connectionTimeout</param-name>
+        <param-value>30000</param-value> <!-- 30 seconds -->
+    </context-param>
+    <context-param>
+        <param-name>jdbc/autoCommit</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+</web-app>

@@ -1,0 +1,155 @@
+@charset "UTF-8";
+
+body {
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+	background-color: #EEE6E4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-shadow: none;
+    font-family: 'Times New Roman', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    margin: 11px 0;
+    color: #000;
+}
+
+/* reset some tags*/
+a {
+	color: #3d3d3f;
+	text-decoration: none;
+	
+}
+
+.container-lg {
+}
+/* HEADER SETTING */
+header h1 {
+	color: #3d3d3f;
+    text-shadow: none;
+    font-family: 'Times New Roman', Helvetica, Arial, sans-serif;
+    font-size: 47px;
+    font-weight: 400;
+    font-style: normal;
+    text-transform: none;
+}
+header h3 {
+	color: #3d3d3f;
+    text-shadow: none;
+    text-transform: none;
+    font-family: 'Times New Roman', Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: normal;
+}
+#top-menu {
+	background-color: #EBCEC0;
+	margin-top: 25px;
+}
+
+#top-menu > a {
+	display: inline-block;
+    color: #000;
+    text-decoration: none;
+    padding: 0 15px;
+    line-height: 30px;
+}
+
+#top-menu > a.active, #top-menu > a:hover {
+	font-weight: bold;
+	text-decoration: underline;
+}
+/* FOOTER SETTING */
+
+#footer {
+	padding: 15px 0;
+}
+/* WELCOME PAGE SETTING */
+
+#index {
+	background-color: #fff;
+}
+
+
+#welcome-post .post img {
+	width: 100%;
+	height: auto;
+}
+#welcome-post .post > :not(:first-child) {
+	margin-top: 10px;
+}
+.icon {
+	width: 100%
+}
+
+#welcome-courses .course-title {
+	margin-top: 0px;
+}
+#welcome-courses .course-date {
+	font-weight: 400;
+    font-style: italic;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+/* SETTING FOR SIGNATURE*/
+.avt-img img {
+	width: 100%;
+	height: auto;
+}
+
+#signature {
+	font-size: 50px;
+	font-family: Monotype Corsiva
+}
+
+/* SETTING FOR RIGHT*/ 
+#right h4 {
+	margin: 0;
+	padding: 10px 0 10px 5px;
+}
+
+#right > div:last-child {
+	border-bottom: 1px solid #acacac;
+}
+
+#right > * {
+	border-top: 1px solid #acacac;
+	border-right: 1px solid #acacac;
+	border-left: 1px solid #acacac;
+}
+
+#right > :not(:first-child) {
+	padding-left: 15px;
+}
+
+/* SETTING FOR price_list*/
+#service-price-lists .row {
+	border-top: 1px solid #d6d6d6;
+	padding: 5px 0;
+}
+
+#service-price-lists .row:last-child {
+	border-bottom: 1px solid #d6d6d6;
+}
+
+/* SETTING FOR employees*/
+#employee-lists .employee{
+	margin-bottom: 30px;
+}
+#employee-lists img {
+	width: 100%;
+	height: auto;
+}
+
+#employee-lists .employee-title {
+	margin-top: 0;
+}
+
+/* SETTING FOR contact_us page */
+
+#contact-us-page > *{
+	margin-bottom: 25px;
+}
+
+#contact-us-page #google-map-location {
+	height: 500px;
+}
