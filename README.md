@@ -8,6 +8,7 @@ Technologies & Tools:
  - HikariCP datasource + JDBC connection
  - Web UI: HTML/CSS with Bootstrap
  - Front end scripting language: Javascript vanilla
+
 Preresquisites for running:
  - Please create your sample database in SQL Server
  - In web.xml please change some properties: sample database name, username, password
