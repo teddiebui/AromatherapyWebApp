@@ -6,6 +6,7 @@ Technologies & Tools:
  - Project build with Maven tool
  - Pure Servlet technology
  - HikariCP datasource + JDBC connection
+ - SQL with SQL Server 2022
  - Web UI: HTML/CSS with Bootstrap
  - Front end scripting language: Javascript vanilla
 
