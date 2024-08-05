@@ -1,21 +1,23 @@
-package controller.api.post;
+package controller.api;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import controller.api.AbstractBasicCrudAPIController;
-import dao.CrudDAO;
 
-/**
- * Servlet implementation class PostController
- */
+import dao.impl.PostDao;
+
+
 @WebServlet("/api/post/*")
 public class PostAPIController extends AbstractBasicCrudAPIController {
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Explicitly set PostDao for this servlet.
+	 */
 	@Override
 	public void init() throws ServletException {
-		// TODO Auto-generated method stub
 		super.init();
-		setDao((CrudDAO) getServletContext().getAttribute("postDao"));
+		PostDao postDao = (PostDao) getServletContext()
+				.getAttribute("postDao");
+		setDao(postDao);
 	}
 }

@@ -14,14 +14,30 @@ import model.Model;
 
 public class EmployeeDao implements CrudDAO {
 	
+	/**
+	 *  A common data source shared across DAO.
+	 */
 	private final DataSource dataSource;
 	
-
-	private static final String SQL_GET_EMPLOYEE_ALL = "SELECT * FROM [Employee]";
-	private static final String SQL_GET_EMPLOYEE = "SELECT * FROM [Employee] WHERE [employee_id]=?";
+	/**
+	 * SQL statement to get all employees.
+	 */
+	private static final String SQL_GET_EMPLOYEE_ALL = 
+			"SELECT * FROM [Employee]";
 	
-	public EmployeeDao(DataSource dataSource) {
-		this.dataSource = dataSource;
+	/**
+	 * SQL statement to get employee by id.
+	 */
+	private static final String SQL_GET_EMPLOYEE = 
+			"SELECT * FROM [Employee] WHERE [employee_id]=?";
+	
+	/**
+	 * Constructor with injected data source.
+	 * 
+	 * @param theDataSource
+	 */
+	public EmployeeDao(DataSource theDataSource) {
+		this.dataSource = theDataSource;
 	}
 	
 
@@ -35,15 +51,21 @@ public class EmployeeDao implements CrudDAO {
 		ResultSet resultSet;
 		try {
 			connection = dataSource.getConnection();
-			preparedStatement = connection.prepareStatement(SQL_GET_EMPLOYEE_ALL);
+			preparedStatement = connection
+					.prepareStatement(SQL_GET_EMPLOYEE_ALL);
 			resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				employee = new Employee();
-				employee.setEmployeeId(resultSet.getInt("employee_id"));
-	            employee.setEmployeeName(resultSet.getString("employee_name"));
-	            employee.setEmployeeTitle(resultSet.getString("employee_title"));
-	            employee.setEmployeeInfo(resultSet.getString("employee_info"));
-	            employee.setEmployeeImgSrc(resultSet.getString("employee_img_src"));
+				employee.setEmployeeId(resultSet
+						.getInt("employee_id"));
+	            employee.setEmployeeName(resultSet
+	            		.getString("employee_name"));
+	            employee.setEmployeeTitle(resultSet
+	            		.getString("employee_title"));
+	            employee.setEmployeeInfo(resultSet.
+	            		getString("employee_info"));
+	            employee.setEmployeeImgSrc(resultSet
+	            		.getString("employee_img_src"));
 	            
 				list.add(employee);
 			}
@@ -67,16 +89,22 @@ public class EmployeeDao implements CrudDAO {
 		ResultSet resultSet;
 		try {
 			connection = dataSource.getConnection();
-			preparedStatement = connection.prepareStatement(SQL_GET_EMPLOYEE);
+			preparedStatement = connection
+					.prepareStatement(SQL_GET_EMPLOYEE);
 			preparedStatement.setInt(1, id);
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				employee = new Employee();
-				employee.setEmployeeId(resultSet.getInt("employee_id"));
-	            employee.setEmployeeName(resultSet.getString("employee_name"));
-	            employee.setEmployeeTitle(resultSet.getString("employee_title"));
-	            employee.setEmployeeInfo(resultSet.getString("employee_info"));
-	            employee.setEmployeeImgSrc(resultSet.getString("employee_img_src"));
+				employee.setEmployeeId(resultSet
+						.getInt("employee_id"));
+	            employee.setEmployeeName(resultSet
+	            		.getString("employee_name"));
+	            employee.setEmployeeTitle(resultSet
+	            		.getString("employee_title"));
+	            employee.setEmployeeInfo(resultSet.
+	            		getString("employee_info"));
+	            employee.setEmployeeImgSrc(resultSet
+	            		.getString("employee_img_src"));
 	            
 				return employee;
 			}

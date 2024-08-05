@@ -1,13 +1,11 @@
-package controller.api.course;
+package controller.api;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import controller.api.AbstractBasicCrudAPIController;
 import dao.CrudDAO;
+import dao.impl.CourseDao;
 
-/**
- * Servlet implementation class CourseAPIController
- */
+
 @WebServlet("/api/course/*")
 public class CourseAPIController extends AbstractBasicCrudAPIController {
 	private static final long serialVersionUID = 1L;
@@ -15,8 +13,9 @@ public class CourseAPIController extends AbstractBasicCrudAPIController {
 	
 	@Override
 	public void init() throws ServletException {
-		// TODO Auto-generated method stub
 		super.init();
-		setDao((CrudDAO) getServletContext().getAttribute("courseDao"));
+		CrudDAO courseDao = (CourseDao) getServletContext()
+				.getAttribute("courseDao");
+		setDao(courseDao);
 	}
 }

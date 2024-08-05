@@ -7,9 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet implementation class TherapyMassageController
- */
 @WebServlet("/therapy_massage")
 public class TherapyMassageController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -23,23 +20,33 @@ public class TherapyMassageController extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Get request to this controller will return
+	 * "therapy_massage.jsp" content.
+	 * @param request object injected by Servlet Container
+	 * @param response object injected by Servlet Container
+	 * @throws ServletException
+	 * @throws IOException
 	 */
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/views/therapy_massage.jsp")
+			HttpServletResponse response) 
+					throws ServletException, IOException {
+		request.getRequestDispatcher(
+				"/WEB-INF/views/therapy_massage.jsp")
 				.forward(request, response);
 
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Post request by default will be handled as Get request.
+	 * @param request object injected by Servlet Container
+	 * @param response object injected by Servlet Container
+	 * @throws ServletException
+	 * @throws IOException
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+			HttpServletResponse response) 
+					throws ServletException, IOException {
 		doGet(request, response);
 	}
 

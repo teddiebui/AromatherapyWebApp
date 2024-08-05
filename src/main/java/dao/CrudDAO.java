@@ -5,14 +5,43 @@ import java.util.List;
 import model.Model;
 
 public interface CrudDAO {
+	/**
+	 * Returns a list of all models.
+	 * @return list of models or empty list by default
+	 * @throws Exception
+	 */
+	List<Model> getAll() throws Exception;
 	
-	public List<Model> getAll() throws Exception;
+	/**
+	 * Finds model by id.
+	 * 
+	 * @param id of expected model
+	 * @return a model or null by default
+	 * @throws Exception
+	 */
+	Model findById(int id) throws Exception;
 	
-	public Model findById(int id) throws Exception;
+	/**
+	 * Create a model and persist to database.
+	 * 
+	 * @param model
+	 * @throws Exception
+	 */
+	default void create(Model model) throws Exception {}
 	
-	public default void create(Model model) throws Exception {}
+	/**
+	 * Update a model and persist to database.
+	 * 
+	 * @param model
+	 * @throws Exception
+	 */
+	default void update(Model model) throws Exception {}
 	
-	public default void update(Model model) throws Exception {}
-	
-	public default void delete(Model model) throws Exception {}
+	/**
+	 * Delete a model from database.
+	 * 
+	 * @param model
+	 * @throws Exception
+	 */
+	default void delete(Model model) throws Exception {}
 }
