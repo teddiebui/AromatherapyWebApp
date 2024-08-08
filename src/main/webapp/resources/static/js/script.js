@@ -19,7 +19,12 @@ function handleResponse(xhr, callback) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                callback(JSON.parse(xhr.responseText));
+				let result = JSON.parse(xhr.responseText);
+				if (result.result == true) {
+					callback(result.data);
+				} else {
+					console.error('API return False result, please check again');
+				}
             } else {
                 console.error('Error: ' + xhr.statusText);
                 displayErrorMessage('Error fetching data. Please try again later.');
@@ -171,7 +176,7 @@ function populateTherapyMassagePosts(posts) {
 function fetchTherapyMassagePosts() {
     let xhr = createXHR();
     xhr.open(global.HTTP_GET_METHOD, `${global.POST_API_END_POINT}${global.SEPARATOR}${global.GET_ACTION}`, true);
-    handleResponse(xhr, (posts) => populateTherapyMassagePosts(posts)); // Display only the latest 3 posts
+    handleResponse(xhr, (posts) => populateTherapyMassagePosts(posts));
     xhr.send();
 }
 

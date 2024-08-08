@@ -8,11 +8,15 @@ import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import course.dao.impl.CourseDaoImpl;
+import course.service.impl.CourseServiceImpl;
 import dao.CrudDAO;
-import dao.impl.CourseDao;
-import dao.impl.EmployeeDao;
-import dao.impl.PostDao;
-import dao.impl.ServiceDao;
+import employee.dao.impl.EmployeeDaoImpl;
+import employee.service.impl.EmployeeServiceImpl;
+import post.dao.impl.PostDaoImpl;
+import post.service.impl.PostServiceImpl;
+import service.dao.impl.ServiceDaoImpl;
+import service.service.impl.ServiceServiceImpl;
 import util.DataSourceUtil;
 
 /**
@@ -39,28 +43,46 @@ public class AppInitializer implements ServletContextListener {
 	/**
 	 * A singleton scoped PostDao shared across servlets.
 	 */
-	private CrudDAO postDao;
+	private PostDaoImpl postDao;
 
 	/**
 	 * A singleton scoped CourseDao shared across servlets.
 	 */
-	private CrudDAO courseDao;
+	private CourseDaoImpl courseDao;
 
 	/**
 	 * A singleton scoped EmployeeDao shared across servlets.
 	 */
-	private CrudDAO employeeDao;
+	private EmployeeDaoImpl employeeDao;
 
 	/**
 	 * A singleton scoped ServiceDao shared across servlets.
 	 */
-	private CrudDAO serviceDao;
+	private ServiceDaoImpl serviceDao;
+
+	/**
+	 * A singleton scoped PostService shared across servlets.
+	 */
+	private PostServiceImpl postService;
+	/**
+	 * A singleton scoped CourseService shared across servlets.
+	 */
+	private CourseServiceImpl courseService;
+
+	/**
+	 * A singleton scoped EmployeeService shared across servlets.
+	 */
+	private EmployeeServiceImpl employeeService;
+	/**
+	 * A singleton scoped EmployeeService shared across servlets.
+	 */
+	private ServiceServiceImpl serviceService;
 
 	/**
 	 * Initializes the context with necessary attributes and setups.
 	 * 
-	 * @param sce the ServletContextEvent containing the ServletContext 
-	 * that is being initialized
+	 * @param sce the ServletContextEvent containing the ServletContext that is
+	 *            being initialized
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -71,51 +93,53 @@ public class AppInitializer implements ServletContextListener {
 		// setup dataSource into ServletContext
 		dataSource = setUpDataSource(sce);
 		// setup CrudDAO into ServletContext
-		postDao = new PostDao(dataSource);
-		courseDao = new CourseDao(dataSource);
-		employeeDao = new EmployeeDao(dataSource);
-		serviceDao = new ServiceDao(dataSource);
+		postDao = new PostDaoImpl(dataSource);
+		postService = new PostServiceImpl(postDao);
+
+		courseDao = new CourseDaoImpl(dataSource);
+		courseService = new CourseServiceImpl(courseDao);
+
+		employeeDao = new EmployeeDaoImpl(dataSource);
+		employeeService = new EmployeeServiceImpl(employeeDao);
+		
+		serviceDao = new ServiceDaoImpl(dataSource);
+		serviceService = new ServiceServiceImpl(serviceDao);
 
 		context.setAttribute("objectMapper", objectMapper);
-		context.setAttribute("postDao", postDao);
-		context.setAttribute("courseDao", courseDao);
-		context.setAttribute("employeeDao", employeeDao);
-		context.setAttribute("serviceDao", serviceDao);
+		context.setAttribute("postService", postService);
+		context.setAttribute("courseService", courseService);
+		context.setAttribute("employeeService", employeeService);
+		context.setAttribute("serviceService", serviceService);
+
 	}
 
 	/**
 	 * Sets up the DataSource using parameters from the ServletContext.
 	 * 
-	 * @param sce the ServletContextEvent containing the ServletContext 
-	 * that is being initialized
+	 * @param sce the ServletContextEvent containing the ServletContext that is
+	 *            being initialized
 	 * @return the configured DataSource
 	 * @throws IllegalArgumentException if any parameter is invalid
 	 */
 	private DataSource setUpDataSource(ServletContextEvent sce) {
-		String jdbcUrl = sce.getServletContext()
-				.getInitParameter("jdbc/url");
-		
+		String jdbcUrl = sce.getServletContext().getInitParameter("jdbc/url");
+
 		String jdbcUser = sce.getServletContext()
 				.getInitParameter("jdbc/username");
-		
+
 		String jdbcPassword = sce.getServletContext()
 				.getInitParameter("jdbc/password");
-		
+
 		int maxPoolSize = Integer.parseInt(
-				sce.getServletContext()
-				.getInitParameter("jdbc/maxPoolSize"));
-		
+				sce.getServletContext().getInitParameter("jdbc/maxPoolSize"));
+
 		int connectionTimeout = Integer.parseInt(sce.getServletContext()
 				.getInitParameter("jdbc/connectionTimeout"));
-		
-		boolean autoCommit = Boolean.parseBoolean(
-				sce.getServletContext()
-				.getInitParameter("jdbc/autoCommit"));
 
-		DataSourceUtil.initializeDataSource(
-				jdbcUrl, 
-				jdbcUser, 
-				jdbcPassword,
+		boolean autoCommit = Boolean.parseBoolean(
+				sce.getServletContext().getInitParameter("jdbc/autoCommit"));
+
+		DataSourceUtil.initializeDataSource(jdbcUrl, jdbcUser, jdbcPassword,
 				maxPoolSize, connectionTimeout, autoCommit);
 
 		return DataSourceUtil.getDataSource();

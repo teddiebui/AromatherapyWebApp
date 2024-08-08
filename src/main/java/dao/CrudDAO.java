@@ -24,10 +24,16 @@ public interface CrudDAO {
 	/**
 	 * Create a model and persist to database.
 	 * 
+	 * 
 	 * @param model
+	 * @return id
 	 * @throws Exception
+	 * 
+	 * 
 	 */
-	default void create(Model model) throws Exception {}
+	default int create(Model model) throws Exception {
+		return 0;
+	}
 	
 	/**
 	 * Update a model and persist to database.
@@ -40,8 +46,8 @@ public interface CrudDAO {
 	/**
 	 * Delete a model from database.
 	 * 
-	 * @param model
+	 * @param id
 	 * @throws Exception
 	 */
-	default void delete(Model model) throws Exception {}
+	default void delete(int id) throws Exception {}
 }
