@@ -1,6 +1,19 @@
 # LAB_4_Aromatherapy
 
-This is a coursework project about Java Web Development.
+Project Name: Aromatherapy & massage.
+Project introduction: This is a coursework project about Java Web Development.
+It's a web app that offers articles about healthcare, courses & service offers in aromatherapy & massage.
+
+Project Architecture & Design: 
+ - N-tier layered architecture:
+  + Presentation
+  + Service Layer 
+  + Data Access Layer
+  + Database
+ - Software Oriented architecture (SOA):
+  + decompose architecture's into components that act as an Rest API services
+
+
 
 Technologies & Tools:
  - Project build with Maven tool
