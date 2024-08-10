@@ -24,7 +24,8 @@ public interface EmployeeDao {
 
 	public static final String SQL_CREATE = "INSERT INTO [Employee] ("
 			+ "[employee_name], " + "[employee_title], " + "[employee_info], "
-			+ "[employee_img_src] " + ") VALUES (?, ?, ?, ?)";
+			+ "[employee_img_src], " + "[employee_username], " + "[employee_hashed_password] "
+			+ ") VALUES (?, ?, ?, ?, ?, ?)";
 
 	/**
 	 * SQL statement for updating new record
@@ -34,6 +35,14 @@ public interface EmployeeDao {
 			+ "[employee_name] = ?, " + "[employee_title] = ?, "
 			+ "[employee_info] = ?, " + "[employee_img_src] = ?, "
 			+ "[employee_join_date] = ? " + " WHERE [employee_id] = ?";
+	
+	/**
+	 * SQL statement for updating new record
+	 */
+
+	public static final String SQL_UPDATE_PASSWORD = "UPDATE [Employee] SET "
+			+ "[employee_hashed_password] = ?, "
+			+ " WHERE [employee_id] = ?";
 
 	/**
 	 * SQL statement for deleting new record
@@ -44,14 +53,12 @@ public interface EmployeeDao {
 	int create(Employee employee) throws SQLException;
 
 	void update(Employee employee) throws SQLException;
+	
+	void updatePassword(Employee employee) throws SQLException;
 
 	void delete(int id) throws SQLException;
 
-	default List<Employee> getAll() throws SQLException {
-		return new ArrayList<>();
-	};
+	List<Employee> getAll() throws SQLException;
 
-	default Employee findById(int id) throws SQLException {
-		return null;
-	};
+	Employee findById(int id) throws SQLException;
 }

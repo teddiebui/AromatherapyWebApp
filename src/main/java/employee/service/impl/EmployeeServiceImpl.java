@@ -9,6 +9,8 @@ import employee.service.EmployeeService;
 
 public class EmployeeServiceImpl implements EmployeeService {
 
+	private static final String VALIDATION_PASSWORD_EMPTY = "Password cannot be null or empty";
+	private static final String VALIDATION_USERNAME_EMPTY = "Username cannot be null or empty";
 	private EmployeeDaoImpl employeeDao;
 
 	public EmployeeServiceImpl(EmployeeDaoImpl employeeDao) {
@@ -72,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		resultSet.put("result", result);
 		resultSet.put("message", message);
 		resultSet.put("data", data);
-		
+
 		return resultSet;
 	}
 
@@ -87,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			if (validateErrors.isEmpty()) {
 				result = true;
 				employeeDao.create(employee);
-				message = CREATE_SUCCESS; 
+				message = CREATE_SUCCESS;
 			} else {
 				result = false;
 				message = CREATE_FAIL_VALIDATE;
@@ -128,7 +130,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				result = false;
 				message = UPDATE_FAIL_VALIDATE;
 			}
-			
+
 		} else {
 			result = false;
 			message = UPDATE_FAIL_ID_NOT_EXIST;
@@ -171,6 +173,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Map<String, Object> validate(Employee employee) {
 		Map<String, Object> result = new HashMap<>();
+
+		if (employee.getUsername() == null
+				|| employee.getUsername().isEmpty()) {
+			result.put("username", VALIDATION_USERNAME_EMPTY);
+		} else if (employee.getUsername().length() > 16
+				|| employee.getUsername().length() < 4) {
+			result.put("username", "Username must be between 4 - 16 characters and starts with characters");
+		}
+
+		if (employee.getPassword() == null
+				|| employee.getPassword().isEmpty()) {
+			result.put("password", VALIDATION_PASSWORD_EMPTY);
+		} else if (employee.getPassword().length() < 6) {
+
+			result.put("password", "Password must be from 6 characters, including both lower, uppercase letters, digits and at least one special characters: \"!@#$%^&*(),./'[]\\\"");
+		}
 		return result;
 	}
 
@@ -182,7 +200,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			exception.printStackTrace();
 			return false;
 		}
-		
+
 	}
 
 	@Override

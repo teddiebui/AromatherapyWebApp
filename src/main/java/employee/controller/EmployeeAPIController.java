@@ -116,6 +116,8 @@ public class EmployeeAPIController extends HttpServlet {
 		String employeeTitle = req.getParameter("employeeTitle");
 		String employeeInfo = req.getParameter("employeeInfo");
 		String employeeImgSrc = req.getParameter("employeeImgSrc");
+		String employeeUsername = req.getParameter("employeeUsername");
+		String employeePassword = req.getParameter("employeePassword");
 		String employeeJoinDate = req.getParameter("employeeJoinDate");
 
 		employee.setEmployeeId(employeeId == null || employeeId.isEmpty() ? 0
@@ -124,6 +126,8 @@ public class EmployeeAPIController extends HttpServlet {
 		employee.setEmployeeTitle(employeeTitle);
 		employee.setEmployeeInfo(employeeInfo);
 		employee.setEmployeeImgSrc(employeeImgSrc);
+		employee.setUsername(employeeUsername);
+		employee.setPassword(employeePassword);
 		employee.setEmployeeJoinDate(
 				employeeJoinDate == null || employeeJoinDate.isEmpty()
 						? new Timestamp(0)

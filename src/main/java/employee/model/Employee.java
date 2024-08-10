@@ -25,6 +25,14 @@ public class Employee {
      * Employee Image Source.
      */
     private String employeeImgSrc;
+    /**
+     * Employee Username.
+     */
+    private String username;
+    /**
+     * Employee Password.
+     */
+    private String password;
     
     /**
      * Employee join date
@@ -115,17 +123,35 @@ public class Employee {
 	public void setEmployeeJoinDate(Timestamp employeeJoinDate) {
 		this.employeeJoinDate = employeeJoinDate;
 	}
+	
+	
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	@Override
 	public String toString() {
-		return "Employee [employeeId=" + employeeId + 
-				", employeeName=" + employeeName + 
-				", employeeTitle=" + employeeTitle + 
-				", employeeInfo=" + employeeInfo + 
-				", employeeImgSrc="	+ employeeImgSrc + 
-				", employeeJoinDate=" + employeeJoinDate
-				+ "]";
+		return "Employee [employeeId=" + employeeId + ", employeeName="
+				+ employeeName + ", employeeTitle=" + employeeTitle
+				+ ", employeeInfo=" + employeeInfo + ", employeeImgSrc="
+				+ employeeImgSrc + ", username=" + username + ", password="
+				+ password + ", employeeJoinDate=" + employeeJoinDate + "]";
 	}
+
+
 
 	
     

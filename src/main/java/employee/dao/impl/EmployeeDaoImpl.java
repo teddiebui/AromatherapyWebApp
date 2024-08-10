@@ -41,16 +41,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 					.prepareStatement(SQL_GET_EMPLOYEE_ALL);
 			resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
-				employee = new Employee();
-				employee.setEmployeeId(resultSet.getInt("employee_id"));
-				employee.setEmployeeName(resultSet.getString("employee_name"));
-				employee.setEmployeeTitle(
-						resultSet.getString("employee_title"));
-				employee.setEmployeeInfo(resultSet.getString("employee_info"));
-				employee.setEmployeeImgSrc(
-						resultSet.getString("employee_img_src"));
-				employee.setEmployeeJoinDate(
-						resultSet.getTimestamp("employee_join_date"));
+				employee = constructModel(resultSet);
 
 				list.add(employee);
 			}
@@ -77,16 +68,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			preparedStatement.setInt(1, id);
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
-				employee = new Employee();
-				employee.setEmployeeId(resultSet.getInt("employee_id"));
-				employee.setEmployeeName(resultSet.getString("employee_name"));
-				employee.setEmployeeTitle(
-						resultSet.getString("employee_title"));
-				employee.setEmployeeInfo(resultSet.getString("employee_info"));
-				employee.setEmployeeImgSrc(
-						resultSet.getString("employee_img_src"));
-				employee.setEmployeeJoinDate(
-						resultSet.getTimestamp("employee_join_date"));
+				employee = constructModel(resultSet);
 
 				return employee;
 			}
@@ -99,6 +81,25 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			}
 		}
 		return null;
+	}
+
+	private Employee constructModel(ResultSet resultSet) throws SQLException {
+		Employee employee;
+		employee = new Employee();
+		employee.setEmployeeId(resultSet.getInt("employee_id"));
+		employee.setEmployeeName(resultSet.getString("employee_name"));
+		employee.setEmployeeTitle(
+				resultSet.getString("employee_title"));
+		employee.setEmployeeInfo(resultSet.getString("employee_info"));
+		employee.setEmployeeImgSrc(
+				resultSet.getString("employee_img_src"));
+		employee.setUsername(
+				resultSet.getString("employee_username"));
+		employee.setPassword(
+				resultSet.getString("employee_hashed_password"));
+		employee.setEmployeeJoinDate(
+				resultSet.getTimestamp("employee_join_date"));
+		return employee;
 	}
 
 	@Override
@@ -115,6 +116,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			preparedStatement.setString(2, employee.getEmployeeTitle());
 			preparedStatement.setString(3, employee.getEmployeeInfo());
 			preparedStatement.setString(4, employee.getEmployeeImgSrc());
+			preparedStatement.setString(5, employee.getUsername());
+			preparedStatement.setString(6, employee.getPassword());
 
 			preparedStatement.executeUpdate();
 			resultSet = preparedStatement.getGeneratedKeys();
@@ -187,6 +190,31 @@ public class EmployeeDaoImpl implements EmployeeDao {
 				connection.close();
 			}
 		}
+	}
+	
+	@Override
+	public void updatePassword(Employee employee) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement;
+		try {
+			connection = dataSource.getConnection();
+			preparedStatement = connection.prepareStatement(SQL_UPDATE);
+			preparedStatement.setString(1, employee.getPassword());
+			preparedStatement.setInt(2, employee.getEmployeeId());
+			preparedStatement.executeUpdate();
+			connection.commit();
+
+		} catch (SQLException e) {
+			if (connection != null) {
+				connection.rollback();
+			}
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+		}
+		
 	}
 
 }
