@@ -7,6 +7,8 @@ ALTER TABLE [Post] DROP CONSTRAINT FK_Post_Employee;
 ALTER TABLE [Post] DROP CONSTRAINT FK_Post_PostStatus;
 ALTER TABLE [Service] DROP CONSTRAINT FK_Service_Employee;
 ALTER TABLE [Course] DROP CONSTRAINT FK_Course_Employee;
+ALTER TABLE [ChangePassword] DROP CONSTRAINT FK_ChangePassword_Employee;
+ALTER TABLE [LoginSession] DROP CONSTRAINT FK_LoginSession_Employee;
 
 -- Drop tables
 DROP TABLE [PostTag];
@@ -16,3 +18,5 @@ DROP TABLE [Service];
 DROP TABLE [Course];
 DROP TABLE [PostStatus];
 DROP TABLE [Employee];
+DROP TABLE [ChangePassword];
+DROP TABLE [LoginSession];
