@@ -23,8 +23,10 @@ public interface CourseDao {
 	public static final String SQL_UPDATE = "UPDATE [Course] SET "
 			+ "[employee_id] = ?, "
 			+ "[course_title] = ?, "
+			+ "[course_info] = ?, "
 			+ "[course_content] = ?, "
-			+ "[course_img_src] = ? "
+			+ "[course_img_src] = ?, "
+			+ "[course_price] = ? "
 			+ "WHERE [course_id] = ?";
 	
 	/**
@@ -33,9 +35,11 @@ public interface CourseDao {
 	public static final String SQL_CREATE = "INSERT INTO [Course] ("
 			+ "[employee_id], "
 			+ "[course_title], "
+			+ "[course_info]?, "
 			+ "[course_content], "
-			+ "[course_img_src]) "
-			+ "VALUES (?, ?, ?, ?)";
+			+ "[course_img_src]), "
+			+ "[course_price]) "
+			+ "VALUES (?, ?, ?, ?, ?, ?)";
 	
 	/**
 	 * SQL statement to delete a course record.

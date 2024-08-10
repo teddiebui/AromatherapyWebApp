@@ -97,7 +97,7 @@ function createCourseElement(course) {
 function populateCourseList(resultList) {
     let container = document.querySelector("#course-list");
     const fragment = document.createDocumentFragment();
-    resultList.forEach((course, index) => {
+    resultList.forEach((course) => {
         fragment.appendChild(createCourseElement(course));
     });
     container.appendChild(fragment);
@@ -115,7 +115,7 @@ function fetchAppointmentEmployee() {
     let queryString = `${global.GET_ACTION}?id=3`;
     xhr.open(global.HTTP_GET_METHOD, `${global.EMPLOYEE_API_END_POINT}${global.SEPARATOR}${queryString}`, true);
     handleResponse(xhr, (result) => {
-        let employee = result.model;
+        let employee = result;
         document.querySelector(".avt-img img").src = global.RESOURCE_PATH + employee.employeeImgSrc;
         document.querySelector("#signature").innerHTML = sanitizeHtml(employee.employeeName);
     });
@@ -241,8 +241,34 @@ function fetchEmployeeLists() {
     handleResponse(xhr, (employees) => populateEmployeeLists(employees)); // Display only the latest 3 posts
     xhr.send();
 }
-
-// Main initialization
+function createCourseRecord(course) {
+	console.log(course);
+	let node = document.createElement("div");
+	node.className = "row g-0 px-2"
+	node.innerHTML = `
+		<div class="course-title col-md-5">${course.courseTitle}</div>
+		<div class="course-info col-md-6">${course.courseInfo}</div>
+		<div class="course-price col-md-1">$${course.coursePrice}</div>
+	`;
+	return node;
+}
+function populateFullPostList(courseList) {
+	const fragment = document.createDocumentFragment();
+	let container = document.getElementById("course-price-lists");
+	for (let course of courseList) {
+		fragment.appendChild(createCourseRecord(course));
+	}
+	
+	container.appendChild(fragment);
+	
+	
+}
+function fetchFullCourseList() {
+	let xhr = createXHR();
+    xhr.open(global.HTTP_GET_METHOD, `${global.COURSE_API_END_POINT}${global.SEPARATOR}${global.GET_ACTION}`, true);
+    handleResponse(xhr, populateFullPostList);
+    xhr.send();
+}
 function initializePage() {
     const currentPage = document.body.dataset.page;
 
@@ -257,10 +283,10 @@ function initializePage() {
             break;
 		case "priceList":
 			fetchServicePriceLists()
+			fetchFullCourseList();
 			break;
 		case "employeeList":
 			fetchEmployeeLists()
-        // Add more cases as needed for different pages
         default:
             console.log("No starter functions for this page");
     }

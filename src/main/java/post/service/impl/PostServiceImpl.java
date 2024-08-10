@@ -1,6 +1,7 @@
 package post.service.impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,11 +123,20 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public Map<String, Object> getAll() {
 		Map<String, Object> resultSet = generateResultSet();
-		List<? super Post> data;
+		List<Post> data;
 		boolean result;
 		String message;
 		try {
 			data = dao.getAll();
+			
+			data.sort(new Comparator<Post>() {
+
+				@Override
+				public int compare(Post o1, Post o2) {
+					// TODO Auto-generated method stub
+					return o2.getPostCreateTime().compareTo(o1.getPostCreateTime());
+				}
+			});
 			result = true;
 			message = GET_ALL_SUCCESS;
 		} catch (Exception exception) {

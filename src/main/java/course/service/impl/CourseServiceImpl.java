@@ -1,6 +1,8 @@
 package course.service.impl;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import course.dao.impl.CourseDaoImpl;
@@ -34,10 +36,19 @@ public class CourseServiceImpl implements CourseService {
 		Map<String, Object> resultSet = generateResultSet();
 		boolean result;
 		String message;
-		Object data;
+		List<Course> data;
 		
 		try {
 			data = courseDao.getAll();
+			
+			data.sort(new Comparator<Course>() {
+
+				@Override
+				public int compare(Course o1, Course o2) {
+					// TODO Auto-generated method stub
+					return o2.getCourseCreateDate().compareTo(o1.getCourseCreateDate());
+				}
+			});
 			message = GET_ALL_SUCCESS;
 			result = true;
 			

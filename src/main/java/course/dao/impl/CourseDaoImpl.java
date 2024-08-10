@@ -108,8 +108,10 @@ public class CourseDaoImpl implements CourseDao {
 		course.setCourseId(resultSet.getInt("course_id"));
 		course.setEmployeeId(resultSet.getInt("employee_id"));
 		course.setCourseTitle(resultSet.getString("course_title"));
+		course.setCourseInfo(resultSet.getString("course_info"));
 		course.setCourseContent(resultSet.getString("course_content"));
 		course.setCourseImgSrc(resultSet.getString("course_img_src"));
+		course.setCoursePrice(resultSet.getFloat("course_price"));
 		course.setCourseCreateDate(resultSet.getDate("course_create_date"));
 		return course;
 	}
@@ -133,8 +135,10 @@ public class CourseDaoImpl implements CourseDao {
 			
 			preparedStatement.setInt(1, course.getEmployeeId());
 			preparedStatement.setString(2, course.getCourseTitle());
-			preparedStatement.setString(3, course.getCourseContent());
-			preparedStatement.setString(4, course.getCourseImgSrc());
+			preparedStatement.setString(3, course.getCourseInfo());
+			preparedStatement.setString(4, course.getCourseContent());
+			preparedStatement.setString(5, course.getCourseImgSrc());
+			preparedStatement.setFloat(6, course.getCoursePrice());
 			
 			preparedStatement.executeUpdate();
 			ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -173,9 +177,11 @@ public class CourseDaoImpl implements CourseDao {
 			
 			preparedStatement.setInt(1, course.getEmployeeId());
 			preparedStatement.setString(2, course.getCourseTitle());
-			preparedStatement.setString(3, course.getCourseContent());
-			preparedStatement.setString(4, course.getCourseImgSrc());
-			preparedStatement.setInt(5, course.getCourseId());
+			preparedStatement.setString(3, course.getCourseInfo());
+			preparedStatement.setString(4, course.getCourseContent());
+			preparedStatement.setString(5, course.getCourseImgSrc());
+			preparedStatement.setFloat(6, course.getCoursePrice());
+			preparedStatement.setInt(7, course.getCourseId());
 			
 			preparedStatement.executeUpdate();
 			connection.commit();

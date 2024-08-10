@@ -16,6 +16,12 @@ public class Course {
      *  Course title.
      */
     private String courseTitle;
+    
+    /**
+     *  Course info.
+     */
+    private String courseInfo;
+    
     /**
      *  Course title.
      */
@@ -25,6 +31,11 @@ public class Course {
      *  Course Image Source.
      */
     private String courseImgSrc;
+    
+    /**
+     *  Course Price.
+     */
+    private float coursePrice;
     
     /**
      *  Course Create Date.
@@ -84,6 +95,23 @@ public class Course {
 		this.courseTitle = newCourseTitle;
 	}
 	
+	
+	/**
+	 * Get Course Info.
+	 * 
+	 * @return string
+	 */
+	public String getCourseInfo() {
+		return courseInfo;
+	}
+	/**
+	 * Set new Course Info.
+	 * @param courseInfo
+	 */
+	public void setCourseInfo(String courseInfo) {
+		this.courseInfo = courseInfo;
+	}
+
 	/**
 	 * Get Course Content.
 	 * 
@@ -115,6 +143,22 @@ public class Course {
 		this.courseImgSrc = newCourseImgSrc;
 	}
 	
+	
+	/**
+	 * Get Course Price.
+	 * @return float
+	 */
+	public float getCoursePrice() {
+		return coursePrice;
+	}
+	/**
+	 * Set Course Price.
+	 * @param coursePrice
+	 */
+	public void setCoursePrice(float coursePrice) {
+		this.coursePrice = coursePrice;
+	}
+
 	/**
 	 * Get Course create date.
 	 * @return sql Date type
@@ -136,10 +180,13 @@ public class Course {
 				", employeeId=" + employeeId + 
 				", courseTitle=" + courseTitle + 
 				", courseContent=" + courseContent + 
-				", courseImgSrc=" + courseImgSrc+ 
+				", courseImgSrc=" + courseImgSrc + 
+				", coursePrice=" + coursePrice + 
 				", courseCreateDate=" + courseCreateDate + 
 				"]";
 	}
+
+
 
 
     

@@ -10,10 +10,18 @@
 <div class="container-lg g-0 p-4" id="index">
 	<div class="row">
 		<div class="col-9" id="left">
+			<h4>Price List</h4>
 			<div class="row g-0" id="service-price-lists">
-				<h4>Price List</h4>
 				<div class="row g-0 px-2">
 					<div class="col-md-5">Treatment</div>
+					<div class="col-md-6">Info</div>
+					<div class="col-md-1">Price</div>
+				</div>
+			</div>
+
+			<div class="row g-0" id="course-price-lists">
+				<div class="row g-0 px-2">
+					<div class="col-md-5">Courses</div>
 					<div class="col-md-6">Info</div>
 					<div class="col-md-1">Price</div>
 				</div>

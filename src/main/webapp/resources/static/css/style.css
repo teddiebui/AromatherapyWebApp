@@ -122,12 +122,17 @@ header h3 {
 }
 
 /* SETTING FOR price_list*/
-#service-price-lists .row {
+
+#service-price-lists , #course-price-lists {
+	margin-bottom: 50px;
+}
+
+#service-price-lists .row, #course-price-lists .row {
 	border-top: 1px solid #d6d6d6;
 	padding: 5px 0;
 }
 
-#service-price-lists .row:last-child {
+#service-price-lists .row:last-child, #course-price-lists .row:last-child {
 	border-bottom: 1px solid #d6d6d6;
 }
 
