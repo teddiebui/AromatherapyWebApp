@@ -2,10 +2,8 @@ package post.model;
 
 import java.sql.Timestamp;
 
-import model.Model;
 
-
-public class Post implements Model {
+public class Post {
     
     /**
      * The unique identifier of the post.

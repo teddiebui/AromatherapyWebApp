@@ -2,12 +2,10 @@ package service.model;
 
 import java.sql.Date;
 
-import model.Model;
-
 /**
  * Represents a service in the system.
  */
-public class Service implements Model {
+public class Service {
     
     /**
      * The unique identifier of the service.
