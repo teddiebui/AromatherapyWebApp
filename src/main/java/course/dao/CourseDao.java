@@ -37,7 +37,7 @@ public interface CourseDao {
 			+ "[course_title], "
 			+ "[course_info], "
 			+ "[course_content], "
-			+ "[course_img_src]), "
+			+ "[course_img_src], "
 			+ "[course_price]) "
 			+ "VALUES (?, ?, ?, ?, ?, ?)";
 	

@@ -9,7 +9,7 @@
 	<!-- Database configuration -->
 	<context-param>
         <param-name>jdbc/url</param-name>
-        <param-value>jdbc:sqlserver://localhost:1433;databaseName=auromatherapy_massage</param-value>
+        <param-value>jdbc:sqlserver://localhost:1433;databaseName=aromatherapy_massage</param-value>
     </context-param>
     <context-param>
         <param-name>jdbc/username</param-name>

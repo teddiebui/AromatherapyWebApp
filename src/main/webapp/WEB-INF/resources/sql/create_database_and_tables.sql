@@ -1,5 +1,5 @@
 
-USE [auromatherapy_massage];
+USE [aromatherapy_massage];
 
 -- Create Employee table
 CREATE TABLE [Employee] (
@@ -67,8 +67,10 @@ CREATE TABLE [Course] (
     [course_id] INT IDENTITY(1,1) PRIMARY KEY,
     [employee_id] INT,
     [course_title] NVARCHAR(255),
+    [course_info] NVARCHAR(100),
     [course_content] NVARCHAR(MAX),
     [course_img_src] NVARCHAR(255),
+    [course_price] DECIMAL(10, 2),
     [course_create_date] DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_Course_Employee FOREIGN KEY ([employee_id]) REFERENCES [Employee]([employee_id])
 );

@@ -1,4 +1,4 @@
-USE [auromatherapy_massage];
+USE [aromatherapy_massage];
 
 -- Drop foreign key constraints
 ALTER TABLE [PostTag] DROP CONSTRAINT FK_PostTag_Post;
