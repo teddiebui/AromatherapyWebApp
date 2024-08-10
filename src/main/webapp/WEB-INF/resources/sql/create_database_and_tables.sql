@@ -10,6 +10,7 @@ CREATE TABLE [Employee] (
     [employee_img_src] NVARCHAR(255),
     [employee_username] NVARCHAR(16) NOT NULL UNIQUE,
     [employee_hashed_password] NVARCHAR(255),
+	[employee_is_locked] BIT NOT NULL DEFAULT 0,
 	[employee_join_date] DATETIME DEFAULT GETDATE(),
 	[employee_create_time] DATETIME DEFAULT GETDATE(),
 );
