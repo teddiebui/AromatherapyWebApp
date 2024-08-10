@@ -35,7 +35,7 @@ public interface CourseDao {
 	public static final String SQL_CREATE = "INSERT INTO [Course] ("
 			+ "[employee_id], "
 			+ "[course_title], "
-			+ "[course_info]?, "
+			+ "[course_info], "
 			+ "[course_content], "
 			+ "[course_img_src]), "
 			+ "[course_price]) "
