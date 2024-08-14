@@ -145,8 +145,8 @@ public class AuthenticationServiceTest {
 	public void testAuthenticate_inputLoginAttemptOver3_returnFail()
 			throws SQLException {
 		Account account = new Account();
-		account.setUsername("rbrown");
-		account.setPassword("Zzzz@1111");
+		account.setUsername("ewhite");
+		account.setPassword("Abcd@1234");
 
 		Map<String, Object> resultSet = service.authenticate(account);
 		boolean result = (boolean) resultSet.get("result");
@@ -154,7 +154,6 @@ public class AuthenticationServiceTest {
 		
 		Account retrievedAccount = accountDao.getByUsername(account.getUsername());
 		
-		System.out.println(retrievedAccount);
 		assertTrue(result == false
 				&& message.equals(AuthenticationService.FAILED_IS_LOCKED)
 				&& retrievedAccount.isLocked() == true);
@@ -173,7 +172,6 @@ public class AuthenticationServiceTest {
 		
 		List<LoginHistory> list = loginHistoryDao.getAllByUsername(account.getUsername());
 		
-		System.out.println(list.getLast());
 		boolean loginStatus = list.getLast().isLoginStatus();
 		
 		assertTrue(result == false
@@ -196,7 +194,6 @@ public class AuthenticationServiceTest {
 		
 		List<LoginHistory> list = loginHistoryDao.getAllByUsername(account.getUsername());
 		
-		System.out.println(list.getLast());
 		loginStatus = list.getLast().isLoginStatus();
 		loginAttempt = list.getLast().getLoginAttempt();
 		assertTrue(result == true
