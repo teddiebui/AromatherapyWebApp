@@ -8,7 +8,11 @@ CREATE TABLE [Employee] (
     [employee_title] NVARCHAR(100),
     [employee_info] NVARCHAR(MAX),
     [employee_img_src] NVARCHAR(255),
-	[employee_join_date] DATETIME DEFAULT GETDATE()
+    [employee_username] NVARCHAR(16) NOT NULL UNIQUE,
+    [employee_hashed_password] NVARCHAR(255),
+	[employee_is_locked] BIT NOT NULL DEFAULT 0,
+	[employee_join_date] DATETIME DEFAULT GETDATE(),
+	[employee_create_time] DATETIME DEFAULT GETDATE(),
 );
 
 -- Create PostStatus table
@@ -73,4 +77,26 @@ CREATE TABLE [Course] (
     [course_price] DECIMAL(10, 2),
     [course_create_date] DATETIME DEFAULT GETDATE(),
     CONSTRAINT FK_Course_Employee FOREIGN KEY ([employee_id]) REFERENCES [Employee]([employee_id])
+);
+
+-- Create ChangePassword table with foreign key to Employee (using employee_username)
+CREATE TABLE [ChangePassword] (
+    [change_password_id] INT IDENTITY(1,1) PRIMARY KEY,
+    [username] NVARCHAR(16) NOT NULL,
+    [is_password_changed] BIT NOT NULL,
+    [old_hashed_password] NVARCHAR(255) NOT NULL,
+    [create_time] DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_ChangePassword_Employee FOREIGN KEY ([username]) REFERENCES [Employee]([employee_username])
+);
+
+-- Create LoginSession table with foreign key to Employee (using employee_username)
+CREATE TABLE [LoginSession] (
+    [login_session_id] NVARCHAR(255) NOT NULL PRIMARY KEY,
+    [username] NVARCHAR(16) NOT NULL,
+    [login_status] BIT NOT NULL,
+    [login_device] NVARCHAR(255),
+    [login_ip_address] NVARCHAR(255),
+    [login_attempt] DECIMAL(10, 1) NOT NULL,
+    [login_create_time] DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_LoginSession_Employee FOREIGN KEY ([username]) REFERENCES [Employee]([employee_username])
 );
