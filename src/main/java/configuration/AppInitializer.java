@@ -8,6 +8,9 @@ import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import authentication.dao.LoginHistoryDAOImpl;
+import authentication.dao.impl.AccountDAOImpl;
+import authentication.service.AuthenticationService;
 import course.dao.impl.CourseDaoImpl;
 import course.service.impl.CourseServiceImpl;
 import employee.dao.impl.EmployeeDaoImpl;
@@ -53,6 +56,9 @@ public class AppInitializer implements ServletContextListener {
 	 * A singleton scoped EmployeeDao shared across servlets.
 	 */
 	private EmployeeDaoImpl employeeDao;
+	
+	private LoginHistoryDAOImpl loginHistoryDao;
+	private AccountDAOImpl accountDao;
 
 	/**
 	 * A singleton scoped ServiceDao shared across servlets.
@@ -76,6 +82,8 @@ public class AppInitializer implements ServletContextListener {
 	 * A singleton scoped EmployeeService shared across servlets.
 	 */
 	private ServiceServiceImpl serviceService;
+	
+	private AuthenticationService authenticationService;
 
 	/**
 	 * Initializes the context with necessary attributes and setups.
@@ -103,12 +111,17 @@ public class AppInitializer implements ServletContextListener {
 		
 		serviceDao = new ServiceDaoImpl(dataSource);
 		serviceService = new ServiceServiceImpl(serviceDao);
+		
+		accountDao = new AccountDAOImpl(dataSource);
+		loginHistoryDao = new LoginHistoryDAOImpl(dataSource);
+		authenticationService = new AuthenticationService(accountDao, loginHistoryDao);
 
 		context.setAttribute("objectMapper", objectMapper);
 		context.setAttribute("postService", postService);
 		context.setAttribute("courseService", courseService);
 		context.setAttribute("employeeService", employeeService);
 		context.setAttribute("serviceService", serviceService);
+		context.setAttribute("authenticationService", authenticationService);
 
 	}
 

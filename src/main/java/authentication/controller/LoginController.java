@@ -26,7 +26,6 @@ public class LoginController extends HttpServlet {
 	private AuthenticationService service;
 	private ObjectMapper objectMapper;
 
-	
 	@Override
 	public void init() throws ServletException {
 		super.init();
@@ -35,10 +34,11 @@ public class LoginController extends HttpServlet {
 		objectMapper = (ObjectMapper) getServletContext()
 				.getAttribute("objectMapper");
 	}
+
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-				request.getRequestURI());
+		request.getRequestDispatcher("/WEB-INF/views/login/login.jsp")
+				.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request,
@@ -47,6 +47,22 @@ public class LoginController extends HttpServlet {
 		Map<String, Object> resultSet = service.authenticate(account);
 		writeJsonToClient(resultSet, response);
 
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+				req.getRequestURI());
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+				req.getRequestURI());
 	}
 
 	private void writeJsonToClient(Map<String, Object> resultSet,
