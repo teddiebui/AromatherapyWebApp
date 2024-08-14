@@ -13,7 +13,7 @@ public class MockDataSource {
 			if (dataSource == null) {
 				HikariConfig config = new HikariConfig();
 				config.setJdbcUrl(
-						"jdbc:sqlserver://localhost:1433;databaseName=auromatherapy_massage");
+						"jdbc:sqlserver://localhost:1433;databaseName=aromatherapy_massage");
 				config.setUsername("binh");
 				config.setPassword("1234");
 				config.setMaximumPoolSize(10);

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,7 @@ public class LoginController extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Account account = getAccount(request);
+		System.out.println(account);
 		Map<String, Object> resultSet = service.authenticate(account);
 		writeJsonToClient(resultSet, response);
 
@@ -72,13 +74,8 @@ public class LoginController extends HttpServlet {
 
 	}
 
-	private Account getAccount(HttpServletRequest request) {
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		Account account = new Account();
-		account.setUsername(username);
-		account.setPassword(password);
-		return account;
+	private Account getAccount(HttpServletRequest request) throws StreamReadException, DatabindException, IOException {
+		return objectMapper.readValue(request.getInputStream(), Account.class);
 	}
 
 }
