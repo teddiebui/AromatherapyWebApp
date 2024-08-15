@@ -1,18 +1,46 @@
 
 USE [aromatherapy_massage];
+-- Create tale Role --
+CREATE TABLE [Role] (
+    [role_name] VARCHAR(50) PRIMARY KEY,
+);
+
+-- Create table PermissionGroup --
+CREATE TABLE [PermissionGroup] (
+    [permission_group_name] VARCHAR(50) PRIMARY KEY,
+);
+
+-- Create tale Permission --
+CREATE TABLE [Permission] (
+    [permission_name] VARCHAR(50) PRIMARY KEY,
+	[permission_group_name] VARCHAR(50),
+	CONSTRAINT FK_PermissionGroup FOREIGN KEY ([permission_group_name]) REFERENCES [PermissionGroup]([permission_group_name])
+
+);
+
+-- Create tale RolePermission --
+CREATE TABLE [RolePermission] (
+    [role_name] VARCHAR(50) NOT NULL,
+    [permission_name] VARCHAR(50) NOT NULL,
+    PRIMARY KEY ([role_name], [permission_name]),
+    CONSTRAINT FK_ROLEPERMISSION_ROLE FOREIGN KEY ([role_name]) REFERENCES [Role]([role_name]) ON DELETE CASCADE,
+    CONSTRAINT FK_ROLEPERMISSION_PERMISSION FOREIGN KEY ([permission_name]) REFERENCES [Permission]([permission_name]) ON DELETE CASCADE
+);
 
 -- Create Employee table
 CREATE TABLE [Employee] (
     [employee_id] INT IDENTITY(1,1) PRIMARY KEY,
-    [employee_name] NVARCHAR(100) NOT NULL,
+    [employee_name] NVARCHAR(100),
     [employee_title] NVARCHAR(100),
     [employee_info] NVARCHAR(MAX),
     [employee_img_src] NVARCHAR(255),
     [employee_username] NVARCHAR(16) NOT NULL UNIQUE,
     [employee_hashed_password] NVARCHAR(255),
-	[employee_is_locked] BIT NOT NULL DEFAULT 0,
+	[employee_is_locked] BIT DEFAULT 0,
+	[employee_role_name] VARCHAR(50),
 	[employee_join_date] DATETIME DEFAULT GETDATE(),
-	[employee_create_time] DATETIME DEFAULT GETDATE(),
+	[employee_create_time] DATETIME DEFAULT GETDATE()
+	CONSTRAINT FK_Employee_Role FOREIGN KEY ([employee_role_name]) REFERENCES [role]([role_name])
 );
 
 -- Create PostStatus table
@@ -90,3 +118,4 @@ CREATE TABLE [LoginHistory] (
     [login_create_time] DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_LoginHistory_Employee FOREIGN KEY ([username]) REFERENCES [Employee]([employee_username])
 );
+
