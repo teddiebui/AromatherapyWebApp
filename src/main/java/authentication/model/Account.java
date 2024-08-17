@@ -10,6 +10,8 @@ public class Account {
 
 	private boolean locked;
 	
+	private String role;
+	
 	private int loginAttempt; 
 
 	private Timestamp createTime;
@@ -56,13 +58,23 @@ public class Account {
 	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
+	
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	@Override
 	public String toString() {
 		return "Account [username=" + username + ", password=" + password
-				+ ", isLocked=" + locked + ", loginAttempt=" + loginAttempt
-				+ ", createTime=" + createTime + "]";
+				+ ", locked=" + locked + ", role=" + role + ", loginAttempt="
+				+ loginAttempt + ", createTime=" + createTime + "]";
 	}
+
 
 
 }

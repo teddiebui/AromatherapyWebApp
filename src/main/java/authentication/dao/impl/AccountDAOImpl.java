@@ -49,6 +49,8 @@ public class AccountDAOImpl implements AccountDAO {
 						resultSet.getString("employee_hashed_password"));
 				account.setLocked(
 						resultSet.getBoolean("employee_is_locked"));
+				account.setRole(
+						resultSet.getString("employee_role_name"));
 				account.setLoginAttempt(
 						resultSet.getInt("login_attempt"));
 			}

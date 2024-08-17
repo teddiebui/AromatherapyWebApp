@@ -10,6 +10,7 @@ import authentication.dao.impl.AccountDAOImpl;
 import authentication.model.Account;
 import authentication.model.LoginHistory;
 import authentication.util.BCryptPasswordEncoder;
+import authentication.util.JWTUtil;
 
 public class AuthenticationService {
 
@@ -132,6 +133,9 @@ public class AuthenticationService {
 					if (!result) {
 						retrievedAccount.setLoginAttempt(retrievedAccount.getLoginAttempt() + 1);
 					} else {
+						//login success, generate jwt token
+						String refreshToken = JWTUtil.getInstance().generateRefreshToken(account.getUsername());
+						resultSet.put("refreshToken", refreshToken);
 						retrievedAccount.setLoginAttempt(0);
 					}
 					// create Login session
@@ -146,6 +150,7 @@ public class AuthenticationService {
 
 		resultSet.put("result", result);
 		resultSet.put("message", message);
+		resultSet.put("retrievedAccount", retrievedAccount);
 		return resultSet;
 
 	}

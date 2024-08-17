@@ -1,10 +1,11 @@
-package authentication.controller;
+package backoffice.controller;
 
 import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,11 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import authentication.model.Account;
 import authentication.service.AuthenticationService;
+import authentication.util.JWTUtil;
 
 /**
  * Servlet implementation class LoginController
  */
-@WebServlet("/login")
+@WebServlet("/backoffice/login")
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -38,15 +40,34 @@ public class LoginController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/WEB-INF/views/login/login.jsp")
+		request.getRequestDispatcher("/WEB-INF/views/backoffice/login.jsp")
 				.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Account account = getAccount(request);
-		System.out.println(account);
+		
 		Map<String, Object> resultSet = service.authenticate(account);
+
+		boolean loginResult = (boolean) resultSet.get("result");
+
+		if (loginResult) {
+			account = (Account) resultSet.get("retrievedAccount");
+			String refreshToken = resultSet.containsKey("refreshToken")
+					? (String) resultSet.get("refreshToken")
+					: null;
+			if (loginResult && refreshToken != null || refreshToken.isEmpty()) {
+				setRefreshTokenCookie(refreshToken, response);
+			}
+			resultSet.remove("refreshToken");
+
+			// generate access token based on account + refresh token
+			String accessToken = JWTUtil.getInstance().generateAccessToken(
+					account.getUsername(), account.getRole());
+			
+			resultSet.put("token", accessToken);
+		}
 		writeJsonToClient(resultSet, response);
 
 	}
@@ -54,7 +75,6 @@ public class LoginController extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
 				req.getRequestURI());
 	}
@@ -62,7 +82,6 @@ public class LoginController extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
 				req.getRequestURI());
 	}
@@ -74,8 +93,28 @@ public class LoginController extends HttpServlet {
 
 	}
 
-	private Account getAccount(HttpServletRequest request) throws StreamReadException, DatabindException, IOException {
+	private Account getAccount(HttpServletRequest request)
+			throws StreamReadException, DatabindException, IOException {
 		return objectMapper.readValue(request.getInputStream(), Account.class);
+	}
+
+	private void setRefreshTokenCookie(String refreshToken, HttpServletResponse response) {
+
+		Cookie cookie = new Cookie("refreshToken", refreshToken);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(12*60*60); // 12 hours
+		cookie.setPath("/back-office/login");
+		cookie.setPath("/back-office/logout");
+		cookie.setPath("/refreshToken");
+		response.addCookie(cookie);
+
+		// Manually set the SameSite attribute by adding it to the response
+		// header
+		response.addHeader("Set-Cookie",
+				cookie.getName() + "=" + cookie.getValue() + "; Max-Age="
+						+ cookie.getMaxAge() + "; Path=" + cookie.getPath()
+						+ "; HttpOnly; Secure; SameSite=Strict");
+
 	}
 
 }

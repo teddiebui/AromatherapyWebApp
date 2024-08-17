@@ -11,6 +11,7 @@ public interface AccountDAO {
 			+ "    e.[employee_username], "
 			+ "    e.[employee_hashed_password], "
 			+ "    e.[employee_is_locked], "
+			+ "    e.[employee_role_name], "
 			+ "    ls.[login_attempt]"
 			+ "FROM "
 			+ "    [Employee] e "
