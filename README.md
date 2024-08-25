@@ -35,6 +35,27 @@ Preresquisites for running:
 
 ChangeLog
 -----------------------------------------------
+**v1.1 - Added AuthenticationService**
+- Features:
+    - JWT Authentication (refresh & access token)
+    - One-session at a time authentication
+    - Preventing same device access login endpoint
+    - Logging out user by invalidating JWT stored in database
+ - Endpoint:
+ - `/authenticationService/authen/login`
+   - Do the authentication by sending body containing `username` & `password` in POST request.
+   - Only one session at a time authentication, mean no support for multiple device logging in.
+   - Allowed methods: POST.
+   - Possible returning HTTP CODE: `200`, `400`, `401`, `403`, `405`, `500`.
+ - `/authenticationService/authen/logout`
+   - Will log out user and invalidate current JWT token.
+   - Allowed method: GET.
+   - Possible returning HTTP CODE: `200`, `400`, `401`, `403`, `405`, `500`.
+ - `/authenticationService/authen/access-token`
+   - Will return a new access-token ONLY for anthenticated user if their JWT not expired/ invalidated.
+   - Allowed method: GET.
+   - Possible returning HTTP CODE: `200`, `400`, `401`, `403`, `405`, `500`.
+-----------------------------------------------
 v1.0
  - Introduce web app with 4 module:
    - PostService API allowing get, create, update post articles for websites
