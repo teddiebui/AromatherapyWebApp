@@ -1,3 +1,8 @@
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'aromatherapy_massage')
+BEGIN
+    CREATE DATABASE [aromatherapy_massage];
+END
+GO
 
 USE [aromatherapy_massage];
 
@@ -8,11 +13,7 @@ CREATE TABLE [Employee] (
     [employee_title] NVARCHAR(100),
     [employee_info] NVARCHAR(MAX),
     [employee_img_src] NVARCHAR(255),
-    [employee_username] NVARCHAR(16) NOT NULL UNIQUE,
-    [employee_hashed_password] NVARCHAR(255),
-	[employee_is_locked] BIT NOT NULL DEFAULT 0,
 	[employee_join_date] DATETIME DEFAULT GETDATE(),
-	[employee_create_time] DATETIME DEFAULT GETDATE(),
 );
 
 -- Create PostStatus table
@@ -79,14 +80,3 @@ CREATE TABLE [Course] (
     CONSTRAINT FK_Course_Employee FOREIGN KEY ([employee_id]) REFERENCES [Employee]([employee_id])
 );
 
--- Create LoginSession table with foreign key to Employee (using employee_username)
-CREATE TABLE [LoginHistory] (
-    [id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    [username] NVARCHAR(16) NOT NULL,
-    [login_status] BIT NOT NULL,
-    [login_device] NVARCHAR(255),
-    [login_ip_address] NVARCHAR(255),
-    [login_attempt] INT NOT NULL,
-    [login_create_time] DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_LoginHistory_Employee FOREIGN KEY ([username]) REFERENCES [Employee]([employee_username])
-);

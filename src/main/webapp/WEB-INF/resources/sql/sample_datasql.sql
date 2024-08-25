@@ -1,12 +1,12 @@
 USE [aromatherapy_massage];
 
 -- Insert employees
-INSERT INTO [Employee] ([employee_name], [employee_title], [employee_info], [employee_img_src], [employee_username], [employee_hashed_password], [employee_join_date])
+INSERT INTO [Employee] ([employee_name], [employee_title], [employee_info], [employee_img_src])
 VALUES 
-('John Doe', 'Massage Therapist', 'John Doe has over 10 years of experience in therapeutic massage. He specializes in Swedish massage and deep tissue techniques, providing a relaxing and rejuvenating experience for clients. John is known for his attention to detail and personalized care, ensuring that each client receives the best possible treatment.', '/resources/static/img/john_doe.jpg', 'jdoe', '$2a$10$HjrS8X./HzT2FImIY6Rrz.jqnOiqz03L7JpEy2T7STxiqvMZ.Uw72', GETDATE()),
-('Jane Smith', 'Aromatherapy Specialist', 'Jane Smith is an expert in aromatherapy with a focus on holistic health. She combines traditional aromatherapy practices with modern wellness techniques to help clients achieve balance and well-being. Jane holds certifications in essential oil therapy and is passionate about educating clients on the benefits of natural healing.', '/resources/static/img/jane_smith.jpg', 'jsmith', '$2a$10$HjrS8X./HzT2FImIY6Rrz.jqnOiqz03L7JpEy2T7STxiqvMZ.Uw72', GETDATE()),
-('Robert Brown', 'Spa Manager', 'Robert Brown oversees the operations of the spa and ensures high-quality service. With a background in hospitality management, Robert brings a wealth of knowledge in customer service and spa administration. He is dedicated to maintaining a welcoming environment and upholding the highest standards of service for all clients.', '/resources/static/img/robert_brown.jpg', 'rbrown', '$2a$10$HjrS8X./HzT2FImIY6Rrz.jqnOiqz03L7JpEy2T7STxiqvMZ.Uw72', GETDATE()),
-('Emily White', 'Manager', 'Emily White is a seasoned manager with expertise in leading teams and driving operational excellence. She has a strong background in project management and is committed to delivering exceptional results for clients. Emily is known for her leadership skills and her ability to inspire and motivate her team.', '/resources/static/img/emily_white.jpg', 'ewhite', '$2a$10$HjrS8X./HzT2FImIY6Rrz.jqnOiqz03L7JpEy2T7STxiqvMZ.Uw72', GETDATE());
+('John Doe', 'Massage Therapist', 'John Doe has over 10 years of experience in therapeutic massage. He specializes in Swedish massage and deep tissue techniques, providing a relaxing and rejuvenating experience for clients. John is known for his attention to detail and personalized care, ensuring that each client receives the best possible treatment.', '/resources/static/img/john_doe.jpg'),
+('Jane Smith', 'Aromatherapy Specialist', 'Jane Smith is an expert in aromatherapy with a focus on holistic health. She combines traditional aromatherapy practices with modern wellness techniques to help clients achieve balance and well-being. Jane holds certifications in essential oil therapy and is passionate about educating clients on the benefits of natural healing.', '/resources/static/img/jane_smith.jpg'),
+('Robert Brown', 'Spa Manager', 'Robert Brown oversees the operations of the spa and ensures high-quality service. With a background in hospitality management, Robert brings a wealth of knowledge in customer service and spa administration. He is dedicated to maintaining a welcoming environment and upholding the highest standards of service for all clients.', '/resources/static/img/robert_brown.jpg'),
+('Emily White', 'Manager', 'Emily White is a seasoned manager with expertise in leading teams and driving operational excellence. She has a strong background in project management and is committed to delivering exceptional results for clients. Emily is known for her leadership skills and her ability to inspire and motivate her team.', '/resources/static/img/emily_white.jpg');
 
 
 -- Insert courses
@@ -49,17 +49,3 @@ VALUES
 (1, 'Cupping Therapy', '45 minutes', '/resources/static/img/cupping.jpg', 75.00, GETDATE()),
 (2, 'Deep Relaxation Massage', '90 minutes', '/resources/static/img/deep_relaxation.jpg', 130.00, GETDATE()),
 (3, 'Reiki Healing', '60 minutes', '/resources/static/img/reiki.jpg', 80.00, GETDATE());
-
-INSERT INTO [LoginHistory] (username, login_status, login_device, login_ip_address, login_attempt, login_create_time)
-VALUES 
-('jdoe', 1, 'Desktop', '192.168.1.1', 1, GETDATE()),
-('jdoe', 1, 'Mobile', '192.168.1.2', 1, GETDATE()),
-('jdoe', 0, 'Tablet', '192.168.1.3', 2, GETDATE()),
-('jsmith', 1, 'Desktop', '192.168.1.4', 1, GETDATE()),
-('jsmith', 0, 'Mobile', '192.168.1.5', 1, GETDATE()),
-('rbrown', 1, 'Desktop', '192.168.1.6', 1, GETDATE()),
-('rbrown', 1, 'Mobile', '192.168.1.7', 1, GETDATE()),
-('jsmith', 0, 'Mobile', '192.168.1.5', 2, GETDATE()),
-('rbrown', 1, 'Desktop', '192.168.1.6', 1.0, GETDATE()),
-('rbrown', 1, 'Mobile', '192.168.1.7', 3, GETDATE()),
-('ewhite', 1, 'Mobile', '192.168.1.7', 4, GETDATE())
