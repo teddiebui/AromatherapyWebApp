@@ -8,15 +8,10 @@ import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import course.dao.impl.CourseDaoImpl;
-import course.service.impl.CourseServiceImpl;
-import employee.dao.impl.EmployeeDaoImpl;
-import employee.service.impl.EmployeeServiceImpl;
-import post.dao.impl.PostDaoImpl;
-import post.service.impl.PostServiceImpl;
-import service.dao.impl.ServiceDaoImpl;
-import service.service.impl.ServiceServiceImpl;
-import util.DataSourceUtil;
+import authentication.dao.LoginHistoryDAOImpl;
+import authentication.dao.impl.AccountDAOImpl;
+import authentication.service.AuthenticationService;
+import authentication.util.DataSourceUtil;
 
 /**
  * Application initializer to set up various components and configurations
@@ -24,54 +19,12 @@ import util.DataSourceUtil;
  */
 @WebListener
 public class AppInitializer implements ServletContextListener {
-	/**
-	 * Contains the context of Servlet Application.
-	 */
 	private ServletContext context;
-
-	/**
-	 * A common Objet Mapper from JSON parser shared across servlets.
-	 */
 	private ObjectMapper objectMapper;
-
-	/**
-	 * A singleton scoped common Data Source shared across servlets.
-	 */
 	private DataSource dataSource;
-
-	/**
-	 * A singleton scoped PostDao shared across servlets.
-	 */
-	private PostDaoImpl postDao;
-
-	/**
-	 * A singleton scoped CourseDao shared across servlets.
-	 */
-	private CourseDaoImpl courseDao;
-
-	/**
-	 * A singleton scoped EmployeeDao shared across servlets.
-	 */
-	private EmployeeDaoImpl employeeDao;
-	private ServiceDaoImpl serviceDao;
-
-	/**
-	 * A singleton scoped PostService shared across servlets.
-	 */
-	private PostServiceImpl postService;
-	/**
-	 * A singleton scoped CourseService shared across servlets.
-	 */
-	private CourseServiceImpl courseService;
-
-	/**
-	 * A singleton scoped EmployeeService shared across servlets.
-	 */
-	private EmployeeServiceImpl employeeService;
-	/**
-	 * A singleton scoped EmployeeService shared across servlets.
-	 */
-	private ServiceServiceImpl serviceService;
+	private LoginHistoryDAOImpl loginHistoryDao;
+	private AccountDAOImpl accountDao;
+	private AuthenticationService authenticationService;
 
 	/**
 	 * Initializes the context with necessary attributes and setups.
@@ -87,25 +40,13 @@ public class AppInitializer implements ServletContextListener {
 		objectMapper = new ObjectMapper();
 		// setup dataSource into ServletContext
 		dataSource = setUpDataSource(sce);
-		// setup CrudDAO into ServletContext
-		postDao = new PostDaoImpl(dataSource);
-		postService = new PostServiceImpl(postDao);
-
-		courseDao = new CourseDaoImpl(dataSource);
-		courseService = new CourseServiceImpl(courseDao);
-
-		employeeDao = new EmployeeDaoImpl(dataSource);
-		employeeService = new EmployeeServiceImpl(employeeDao);
 		
-		serviceDao = new ServiceDaoImpl(dataSource);
-		serviceService = new ServiceServiceImpl(serviceDao);
-		
+		accountDao = new AccountDAOImpl(dataSource);
+		loginHistoryDao = new LoginHistoryDAOImpl(dataSource);
+		authenticationService = new AuthenticationService(accountDao, loginHistoryDao);
 
 		context.setAttribute("objectMapper", objectMapper);
-		context.setAttribute("postService", postService);
-		context.setAttribute("courseService", courseService);
-		context.setAttribute("employeeService", employeeService);
-		context.setAttribute("serviceService", serviceService);
+		context.setAttribute("authenticationService", authenticationService);
 
 	}
 

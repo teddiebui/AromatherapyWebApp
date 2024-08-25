@@ -3,10 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.teddie</groupId>
-	<artifactId>Aromatherapy_massage</artifactId>
+	<artifactId>AuthenticationService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<description>Website for business Aromatherapy_massage</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -22,30 +21,7 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
-
-		<!-- Servlet API -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<!-- JSP API -->
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>javax.servlet.jsp-api</artifactId>
-			<version>2.3.3</version>
-		</dependency>
-
-		<!-- JSTL -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-
 		<!-- HikariCP -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
@@ -84,9 +60,5 @@
 			<artifactId>java-jwt</artifactId>
 			<version>4.2.1</version>
 		</dependency>
-
-
 	</dependencies>
-
-
 </project>

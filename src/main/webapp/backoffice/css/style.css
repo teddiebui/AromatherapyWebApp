@@ -1,0 +1,9 @@
+@charset "UTF-8";
+/* Modal styles */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+.modal-content {
+    margin: 2rem auto;
+    z-index: 1100 !important;
+}
