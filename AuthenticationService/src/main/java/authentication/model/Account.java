@@ -12,6 +12,8 @@ public class Account {
 
 	private boolean locked;
 	
+	private Role role;
+	
 	private List<LoginHistory> loginHistories; 
 
 	private Timestamp createTime;
@@ -60,12 +62,24 @@ public class Account {
 		this.createTime = createTime;
 	}
 
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
 	@Override
 	public String toString() {
 		return "Account [username=" + username + ", password=" + password
-				+ ", locked=" + locked + ", loginHistories=" + loginHistories
-				+ ", createTime=" + createTime + "]";
+				+ ", locked=" + locked + ", role=" + role + ", loginHistories="
+				+ loginHistories + ", createTime=" + createTime + "]";
 	}
+	
+	
+
+
 
 
 

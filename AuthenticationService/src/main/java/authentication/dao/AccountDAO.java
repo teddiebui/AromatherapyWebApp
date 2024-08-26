@@ -11,6 +11,7 @@ public interface AccountDAO {
 			+ "    a.[username], "
 			+ "    a.[hashed_password], "
 			+ "    a.[is_locked], "
+			+ "    a.[role_name], "
 			+ "    ls.[login_history_id], "
 			+ "    ls.[login_attempt], "
 			+ "    ls.[refresh_key], "
