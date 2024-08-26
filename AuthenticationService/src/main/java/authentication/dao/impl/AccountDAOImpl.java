@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import authentication.dao.AccountDAO;
 import authentication.model.Account;
 import authentication.model.LoginHistory;
+import authentication.model.Role;
 
 public class AccountDAOImpl implements AccountDAO {
 	
@@ -34,6 +35,7 @@ public class AccountDAOImpl implements AccountDAO {
 	public Account getLoginAccount(String username) throws SQLException {
 		Account account = null;
 		LoginHistory loginHistory = null;
+		Role role = null;
 		Connection connection = null;
 		PreparedStatement preparedStatement;
 		ResultSet resultSet;
@@ -45,6 +47,9 @@ public class AccountDAOImpl implements AccountDAO {
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				account = new Account();
+				role = new Role();
+				role.setRoleName(
+						resultSet.getString("role_name"));
 				loginHistory = new LoginHistory();
 				account.setUsername(
 						resultSet.getString("username"));
@@ -52,6 +57,7 @@ public class AccountDAOImpl implements AccountDAO {
 						resultSet.getString("hashed_password"));
 				account.setLocked(
 						resultSet.getBoolean("is_locked"));
+				account.setRole(role);
 				loginHistory.setId(
 						resultSet.getInt("login_history_id"));
 				loginHistory.setLoginAttempt(

@@ -2,6 +2,7 @@ package authentication.service;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -9,8 +10,10 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import authentication.dao.LoginHistoryDAOImpl;
 import authentication.dao.impl.AccountDAOImpl;
+import authentication.dao.impl.PermissionDaoImpl;
 import authentication.model.Account;
 import authentication.model.LoginHistory;
+import authentication.model.Permission;
 import authentication.util.BCryptPasswordEncoder;
 import authentication.util.JWTUtil;
 
@@ -35,10 +38,6 @@ public class AuthenticationService {
 	public static final String USERNAME_VALIDATE_MESSAGE = "Username cannot be empty. Must be 4 - 16 characters and digits, "
 			+ "and should starts with character.";
 
-	private AccountDAOImpl accountDao;
-
-	private LoginHistoryDAOImpl loginHistoryDao;
-
 	public static final String FAILED_VALIDATION = "Authentication failed due to form validation errors.";
 
 	public static final String FAILED_NOT_EXIST = "Authentication failed due to username doesn't exist.";
@@ -56,6 +55,12 @@ public class AuthenticationService {
 
 	public static final Pattern USERNAME_PATTERN = Pattern
 			.compile("^[A-Za-z][A-Za-z0-9]{3,15}");
+	
+	private AccountDAOImpl accountDao;
+
+	private LoginHistoryDAOImpl loginHistoryDao;
+	
+	private PermissionDaoImpl permissionDao;
 
 	public AuthenticationService() {
 	}
@@ -80,6 +85,15 @@ public class AuthenticationService {
 
 	public void setLoginHistoryDao(LoginHistoryDAOImpl loginHistoryDao) {
 		this.loginHistoryDao = loginHistoryDao;
+	}
+	
+	
+	public PermissionDaoImpl getPermissionDao() {
+		return permissionDao;
+	}
+
+	public void setPermissionDao(PermissionDaoImpl permissionDao) {
+		this.permissionDao = permissionDao;
 	}
 
 	public Map<String, Object> generateResultSet() {
@@ -126,8 +140,6 @@ public class AuthenticationService {
 				LoginHistory loginHistory = retrievedAccount == null ? null
 						: retrievedAccount.getLoginHistories().getLast();
 
-				System.out.println(retrievedAccount);
-
 				if (retrievedAccount == null) {
 					code = 401;
 					message = FAILED_NOT_EXIST;
@@ -143,7 +155,6 @@ public class AuthenticationService {
 					// compare password
 					result = checkPassword(account.getPassword(),
 							retrievedAccount.getPassword());
-					LoginHistory newLoginHistory = new LoginHistory();
 					int loginAttempt = 0;
 					String refreshToken = "";
 					String accessToken = "";
@@ -159,16 +170,20 @@ public class AuthenticationService {
 						log_out(retrievedAccount);
 
 						// generate new refresh key, access key
+						List<Permission> permissions = permissionDao.getByRole(retrievedAccount.getRole().getRoleName());
+						String[] permissionList = getPermissionList(permissions);
+						boolean isAdmin = retrievedAccount.getRole().getRoleName().equalsIgnoreCase("admin");
 						refreshToken = JWTUtil.getInstance()
-								.generateRefreshToken(account.getUsername());
+								.generateRefreshToken(account.getUsername(), permissionList, isAdmin);
 						accessToken = JWTUtil.getInstance()
-								.generateAccessToken(account.getUsername());
+								.generateAccessToken(account.getUsername(), permissionList, isAdmin);
 						code = 200;
 						message = SUCCESS;
 						resultSet.put("refreshToken", refreshToken);
 						resultSet.put("accessToken", accessToken);
 					}
 					// create Login Session
+					LoginHistory newLoginHistory = new LoginHistory();
 					newLoginHistory.setUsername(account.getUsername());
 					newLoginHistory.setLoginStatus(result);
 					newLoginHistory.setLoginDevice("not yet impl");
@@ -192,10 +207,18 @@ public class AuthenticationService {
 
 	}
 
+	private String[] getPermissionList(List<Permission> permissions) {
+		String[] permissionList = new String[permissions.size()];
+		for (int i=0; i < permissions.size(); i++) {
+			permissionList[i] = permissions.get(i).getPermissionName();
+		}
+		return permissionList;
+	}
+
 	private void log_out(Account retrievedAccount) throws SQLException {
 		LoginHistory lastLoginSuccess = loginHistoryDao
 				.getLastLoginSuccess(retrievedAccount.getUsername());
-		if (lastLoginSuccess.getRefreshKey() != null
+		if (lastLoginSuccess != null && lastLoginSuccess.getRefreshKey() != null
 				&& !lastLoginSuccess.getRefreshKey().isEmpty()
 				&& lastLoginSuccess.isRefreshKeyActive()) {
 			lastLoginSuccess.setRefreshKeyActive(false);
@@ -257,8 +280,6 @@ public class AuthenticationService {
 		String message;
 		LoginHistory loginHistory;
 		String accessToken = "";
-		
-		System.out.println("refreshToken: " + refreshToken);
 
 		if (refreshToken == null || refreshToken.isEmpty()) {
 			code = 400;
@@ -276,7 +297,9 @@ public class AuthenticationService {
 						result = true;
 						message = SUCCESS_GENERATE_ACCESS_TOKEN;
 						accessToken = JWTUtil.getInstance().generateAccessToken(
-								loginHistory.getUsername());
+								loginHistory.getUsername(), 
+								decodedToken.getClaim("permissions").asArray(String.class),
+								decodedToken.getClaim("admin").asBoolean());
 
 					} else {
 						// return 403

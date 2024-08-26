@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import authentication.dao.LoginHistoryDAOImpl;
 import authentication.dao.impl.AccountDAOImpl;
+import authentication.dao.impl.PermissionDaoImpl;
 import authentication.service.AuthenticationService;
 import authentication.util.DataSourceUtil;
 
@@ -24,6 +25,7 @@ public class AppInitializer implements ServletContextListener {
 	private DataSource dataSource;
 	private LoginHistoryDAOImpl loginHistoryDao;
 	private AccountDAOImpl accountDao;
+	private PermissionDaoImpl permissionDao;
 	private AuthenticationService authenticationService;
 
 	/**
@@ -43,7 +45,9 @@ public class AppInitializer implements ServletContextListener {
 		
 		accountDao = new AccountDAOImpl(dataSource);
 		loginHistoryDao = new LoginHistoryDAOImpl(dataSource);
+		permissionDao = new PermissionDaoImpl(dataSource);
 		authenticationService = new AuthenticationService(accountDao, loginHistoryDao);
+		authenticationService.setPermissionDao(permissionDao);
 
 		context.setAttribute("objectMapper", objectMapper);
 		context.setAttribute("authenticationService", authenticationService);

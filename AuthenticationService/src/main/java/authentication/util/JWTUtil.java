@@ -6,7 +6,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 import java.util.Date;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -56,7 +55,7 @@ public class JWTUtil {
 		return accessKey;
 	}
 
-	public String generateRefreshToken(String subject) {
+	public String generateRefreshToken(String subject, String[] permissions, boolean isAdmin) {
 		try {
 			RSAPrivateKey privateKey = (RSAPrivateKey) refreshKey.getPrivate();
 			Algorithm algorithm = Algorithm.RSA256(null, privateKey);
@@ -65,13 +64,16 @@ public class JWTUtil {
 					.withExpiresAt(new Date(
 							System.currentTimeMillis() + 12 * 60 * 60 * 1000L)) // 12
 																				// hours
+					.withClaim("admin", true)
+					.withArrayClaim("permissions", permissions)
 					.sign(algorithm);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	public DecodedJWT verifyRefreshToken(String token) {
 		try {
 			RSAPublicKey publicKey = (RSAPublicKey) refreshKey.getPublic();
@@ -84,7 +86,7 @@ public class JWTUtil {
 		return null;
 	}
 
-	public String generateAccessToken(String subject) {
+	public String generateAccessToken(String subject, String[] permissionList, boolean isAdmin) {
 		try {
 			RSAPrivateKey privateKey = (RSAPrivateKey) accessKey.getPrivate();
 			Algorithm algorithm = Algorithm.RSA256(null, privateKey);
@@ -93,6 +95,8 @@ public class JWTUtil {
 					.withExpiresAt(new Date(
 							System.currentTimeMillis() + 15 * 60 * 1000L)) // 15
 																			// minutes
+					.withClaim("admin", true)
+					.withArrayClaim("permissions", permissionList)
 					.sign(algorithm);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,18 +153,27 @@ public class JWTUtil {
 		return "-----BEGIN PUBLIC KEY-----\n" + base64PublicKey
 				+ "\n-----END PUBLIC KEY-----";
 	}
-	
+
 	// Method to get the public key as a Base64 encoded string
-		public String getPrivateKeyAsBase64(KeyPair keyPair) {
-			RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-			return Base64.getEncoder().encodeToString(privateKey.getEncoded());
-		}
+	public String getPrivateKeyAsBase64(KeyPair keyPair) {
+		RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+		return Base64.getEncoder().encodeToString(privateKey.getEncoded());
+	}
 
-		// Method to get the public key in PEM format
-		public String getPrivateKeyAsPEM(KeyPair keyPair) {
-			String base64PublicKey = getPrivateKeyAsBase64(keyPair);
-			return "-----BEGIN PRIVATE KEY-----\n" + base64PublicKey
-					+ "\n-----END PRIVATE KEY-----";
-		}
+	// Method to get the public key in PEM format
+	public String getPrivateKeyAsPEM(KeyPair keyPair) {
+		String base64PublicKey = getPrivateKeyAsBase64(keyPair);
+		return "-----BEGIN PRIVATE KEY-----\n" + base64PublicKey
+				+ "\n-----END PRIVATE KEY-----";
+	}
 
+	public void checkTokenInfo(String token) {
+		byte[] length = token.getBytes();
+
+		String print = String.format(
+				"Token length in byte: %d\npublic key: %s\nprivate key: %s",
+				length.length, getPublicKeyAsPEM(refreshKey), getPrivateKeyAsPEM(refreshKey));
+		
+		System.out.println(print);
+	}
 }
