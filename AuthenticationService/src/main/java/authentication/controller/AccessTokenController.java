@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import authentication.service.AuthenticationService;
 
 
-@WebServlet("/authen/access-token")
+@WebServlet("/authen/refreshToken")
 public class AccessTokenController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -34,19 +34,21 @@ public class AccessTokenController extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String token = getTokenFromCookie(request);
-		Map<String, Object> resultSet = service.generateAccessToken(token);
-		
-		int code = (int) resultSet.get("code");
-		String redirect = (String) request.getParameter("redirect");
+		String refreshToken = getTokenFromCookie(request);
+		String accessToken = getTokenFromHeader(request);
+		Map<String, Object> resultSet = service.generateAccessToken(refreshToken, accessToken);
 
-		if (code != 200) {
-			redirect = "/index";
+		if ((int) resultSet.get("code") == 200) {
+			String redirect = (String) request.getParameter("redirect");
+			resultSet.put("redirect", redirect);
 		}
-		resultSet.put("redirect", redirect);
+		
+		if ((boolean) resultSet.get("forceLogOut")) {
+			clearRefreshTokenFromCookie(request, response);
+		}
 		writeToJson(resultSet, response);
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -91,6 +93,33 @@ public class AccessTokenController extends HttpServlet {
 		resultSet.put("code", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		resultSet.put("message", "Not allowed.");
 		return resultSet;
+	}
+	
+	private String getTokenFromHeader(HttpServletRequest req) {
+		String value = req.getHeader("Authorization");
+		String token = null;
+		
+		if (value != null && !value.isEmpty()) {
+			token = value.substring(7); 
+		}
+		
+		return token;
+	} 
+	
+	private void clearRefreshTokenFromCookie(HttpServletRequest request,
+			HttpServletResponse response) {
+		Cookie invalidateToken = null;
+		for (Cookie cookie: request.getCookies()) {
+			if (cookie.getName().equalsIgnoreCase("jwt-refresh-token")) {
+				invalidateToken = new Cookie(
+						cookie.getName(),
+						cookie.getValue());
+				invalidateToken.setPath(cookie.getPath());
+				invalidateToken.setMaxAge(0);
+				response.addCookie(invalidateToken);
+			}
+		}
+		
 	}
 
 

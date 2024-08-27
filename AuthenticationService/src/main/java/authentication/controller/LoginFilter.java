@@ -16,9 +16,12 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import authentication.util.JWTUtil;
 
 
 @WebFilter("/authen/login")
@@ -41,17 +44,20 @@ public class LoginFilter extends HttpFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		String token = getTokenFromHeader(httpRequest);
-		if (token == null || token.isEmpty()) {
-			token = getTokenFromCookie(httpRequest);
+		String token = getTokenFromCookie(httpRequest);
+		if (token != null && !token.isEmpty()) {
+			DecodedJWT decodedToken = JWTUtil.getInstance().verifyRefreshToken(token);
+			
+			if (decodedToken != null) {
+				writeToJson(generateAlreadyAuthenticated(httpRequest), httpResponse);
+				return;
+			}
+			
 		}
-
-		if (token == null || token.isEmpty()) {
-			token = getTokenFromCookie(httpRequest);
-			chain.doFilter(request, response);
-		} else {
-			writeToJson(generateAlreadyAuthenticated(httpRequest), httpResponse);
-		}
+		
+		chain.doFilter(request, response);
+		
+		
 		
 	}
 
@@ -70,13 +76,6 @@ public class LoginFilter extends HttpFilter implements Filter {
 		objectMapper.writeValue(response.getOutputStream(), resultSet);
 	}
 
-	private String getTokenFromHeader(HttpServletRequest httpRequest) {
-		String header = httpRequest.getHeader("Authorization");
-		if (header != null && !header.isEmpty()) {
-			return header.substring(7);
-		}
-		return "";
-	}
 	
 	private String getTokenFromCookie(HttpServletRequest httpRequest) {
 		Cookie[] cookies = httpRequest.getCookies();

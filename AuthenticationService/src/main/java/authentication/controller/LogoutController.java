@@ -11,13 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import authentication.service.AuthenticationService;
-import authentication.util.JWTUtil;
 
 @WebServlet("/authen/logout")
 public class LogoutController extends HttpServlet {
@@ -39,10 +37,7 @@ public class LogoutController extends HttpServlet {
 			writeToJson(generateNotYetAuthenticated(request), response);
 			return;
 		}
-		
-		DecodedJWT decodedToken = JWTUtil.getInstance().verifyRefreshToken(token);
-		String username = decodedToken.getSubject();
-		Map<String, Object> resultSet = service.logout(username);
+		Map<String, Object> resultSet = service.logout(token);
 		
 		if ((boolean) resultSet.get("result")) {
 			resultSet.put("redirect", "/index");
