@@ -19,6 +19,18 @@ import authentication.util.JWTUtil;
 
 public class AuthenticationService {
 
+//	private static final long EXPIRE_AFTER_15_MINUTES = 15*60*1000L;
+//
+//	private static final long EXPIRE_AFTER_12_HOUR = 12*60*60*1000L;
+
+	private static final String ACCESS_TOKEN_CANNOT_BE_NULL = "Access Token cannot be null or empty";
+
+	private static final long EXPIRE_AFTER_30_MINUTES = 30 * 60 * 1000L;
+
+	private static final long EXPIRE_AFTER_15_MINUTES = 15 * 60 * 1000L;
+
+	private static final long EXPIRE_AFTER_12_HOUR = 12 * 60 * 60 * 1000L;
+
 	public static final String REFRESH_TOKEN_CANNOT_BE_NULL = "Token cannot be null or empty.";
 
 	public static final String SUCCESS_GENERATE_ACCESS_TOKEN = "OK.";
@@ -55,11 +67,11 @@ public class AuthenticationService {
 
 	public static final Pattern USERNAME_PATTERN = Pattern
 			.compile("^[A-Za-z][A-Za-z0-9]{3,15}");
-	
+
 	private AccountDAOImpl accountDao;
 
 	private LoginHistoryDAOImpl loginHistoryDao;
-	
+
 	private PermissionDaoImpl permissionDao;
 
 	public AuthenticationService() {
@@ -86,8 +98,7 @@ public class AuthenticationService {
 	public void setLoginHistoryDao(LoginHistoryDAOImpl loginHistoryDao) {
 		this.loginHistoryDao = loginHistoryDao;
 	}
-	
-	
+
 	public PermissionDaoImpl getPermissionDao() {
 		return permissionDao;
 	}
@@ -166,17 +177,24 @@ public class AuthenticationService {
 
 					} else {
 						// invalidate previous refresh key
-						// try to get last history with refreshToken
-						log_out(retrievedAccount);
+						// allow only one session at a time
+						forceLogOut(retrievedAccount);
 
 						// generate new refresh key, access key
-						List<Permission> permissions = permissionDao.getByRole(retrievedAccount.getRole().getRoleName());
-						String[] permissionList = getPermissionList(permissions);
-						boolean isAdmin = retrievedAccount.getRole().getRoleName().equalsIgnoreCase("admin");
+						List<Permission> permissions = permissionDao.getByRole(
+								retrievedAccount.getRole().getRoleName());
+						String[] permissionList = getPermissionList(
+								permissions);
+						boolean isAdmin = retrievedAccount.getRole()
+								.getRoleName().equalsIgnoreCase("admin");
 						refreshToken = JWTUtil.getInstance()
-								.generateRefreshToken(account.getUsername(), permissionList, isAdmin);
-						accessToken = JWTUtil.getInstance()
-								.generateAccessToken(account.getUsername(), permissionList, isAdmin);
+								.generateRefreshToken(account.getUsername(),
+										permissionList, isAdmin,
+										EXPIRE_AFTER_12_HOUR);
+						accessToken = JWTUtil.getInstance().generateAccessToken(
+								account.getUsername(), permissionList, isAdmin,
+								EXPIRE_AFTER_30_MINUTES,
+								EXPIRE_AFTER_15_MINUTES);
 						code = 200;
 						message = SUCCESS;
 						resultSet.put("refreshToken", refreshToken);
@@ -209,15 +227,19 @@ public class AuthenticationService {
 
 	private String[] getPermissionList(List<Permission> permissions) {
 		String[] permissionList = new String[permissions.size()];
-		for (int i=0; i < permissions.size(); i++) {
+		for (int i = 0; i < permissions.size(); i++) {
 			permissionList[i] = permissions.get(i).getPermissionName();
 		}
 		return permissionList;
 	}
 
-	private void log_out(Account retrievedAccount) throws SQLException {
+	private void forceLogOut(Account retrievedAccount) throws SQLException {
+		forceLogOut(retrievedAccount.getUsername());
+	}
+
+	private void forceLogOut(String username) throws SQLException {
 		LoginHistory lastLoginSuccess = loginHistoryDao
-				.getLastLoginSuccess(retrievedAccount.getUsername());
+				.getLastLoginSuccess(username);
 		if (lastLoginSuccess != null && lastLoginSuccess.getRefreshKey() != null
 				&& !lastLoginSuccess.getRefreshKey().isEmpty()
 				&& lastLoginSuccess.isRefreshKeyActive()) {
@@ -226,14 +248,17 @@ public class AuthenticationService {
 		}
 	}
 
-	public Map<String, Object> logout(String username) {
+	public Map<String, Object> logout(String token) {
 		Map<String, Object> resultSet = generateResultSet();
 		boolean result = false;
 		int code = 0;
 		String message = "";
-
 		LoginHistory lastRefreshToken;
+
 		try {
+			DecodedJWT decodedToken = JWTUtil.getInstance()
+					.verifyRefreshToken(token);
+			String username = decodedToken.getSubject();
 			lastRefreshToken = loginHistoryDao.getLastLoginSuccess(username);
 			if (lastRefreshToken.getRefreshKey() != null
 					&& !lastRefreshToken.getRefreshKey().isEmpty()
@@ -273,61 +298,73 @@ public class AuthenticationService {
 		return BCryptPasswordEncoder.getInstance().checkpw(password, password2);
 	}
 
-	public Map<String, Object> generateAccessToken(String refreshToken) {
+	public Map<String, Object> generateAccessToken(String refreshToken,
+			String accessToken) {
 		Map<String, Object> resultSet = generateResultSet();
 		boolean result = false;
 		int code;
 		String message;
-		LoginHistory loginHistory;
-		String accessToken = "";
-
+		String newAccessToken = "";
+		boolean forceLogOut = false;
+		
 		if (refreshToken == null || refreshToken.isEmpty()) {
 			code = 400;
 			message = REFRESH_TOKEN_CANNOT_BE_NULL;
 		} else {
-			try {
-				loginHistory = loginHistoryDao.findByToken(refreshToken);
-				if (loginHistory != null && loginHistory.isRefreshKeyActive()) {
-					DecodedJWT decodedToken = JWTUtil.getInstance()
-							.verifyRefreshToken(loginHistory.getRefreshKey());
-					if (!JWTUtil.getInstance().isTokenExpired(decodedToken)) {
-						// generate token
-						// return 200
-						code = 200;
-						result = true;
-						message = SUCCESS_GENERATE_ACCESS_TOKEN;
-						accessToken = JWTUtil.getInstance().generateAccessToken(
-								loginHistory.getUsername(), 
-								decodedToken.getClaim("permissions").asArray(String.class),
-								decodedToken.getClaim("admin").asBoolean());
-
-					} else {
-						// return 403
-						code = 403;
-						message = REFRESH_TOKEN_IS_EXPIRED;
+			DecodedJWT decodedRefreshToken = verifyRefreshToken(refreshToken);
+			if (decodedRefreshToken == null) {
+				code = 401;
+				message = REFRESH_TOKEN_IS_EXPIRED;
+			} else if (accessToken == null || accessToken.isEmpty()) {
+				code = 400;
+				message = ACCESS_TOKEN_CANNOT_BE_NULL;
+				
+			} else {
+				DecodedJWT decodedAccessToken = verifyAccessToken(accessToken);
+				if (decodedAccessToken == null) {
+					String username = decodedRefreshToken.getSubject();
+					try {
+						forceLogOut(username);
+						forceLogOut = true;
+						code = 401;
+						message = "Excess 30 mins inactive, account logged out. Please login again.";
+					} catch (SQLException exception) {
+						exception.printStackTrace();
+						code = 500;
+						message = UNEXPECTED_ERROR;
 					}
+					
 				} else {
-					// return 401
-					code = 401;
-					message = REFRESH_TOKEN_NOT_FOUND_OR_REVOKED;
-
+					result = true;
+					code = 200;
+					message = SUCCESS_GENERATE_ACCESS_TOKEN;
+					newAccessToken = JWTUtil.getInstance().generateAccessToken(
+							decodedAccessToken.getSubject(), 
+							decodedAccessToken.getClaim("permissions").asArray(String.class), 
+							decodedAccessToken.getClaim("admin").asBoolean(), 
+							EXPIRE_AFTER_30_MINUTES, 
+							EXPIRE_AFTER_15_MINUTES);
 				}
-			} catch (SQLException exception) {
-				exception.printStackTrace();
-				code = 500;
-				message = UNEXPECTED_ERROR;
-			} catch (Exception exception2) {
-				exception2.printStackTrace();
-				code = 500;
-				message = UNEXPECTED_ERROR;
 			}
 		}
-
+		
 		resultSet.put("code", code);
 		resultSet.put("result", result);
 		resultSet.put("message", message);
-		resultSet.put("accessToken", accessToken);
+		resultSet.put("accessToken", newAccessToken);
+		resultSet.put("forceLogOut", forceLogOut);
 		return resultSet;
+	}
+
+	private DecodedJWT verifyAccessToken(String accessToken) {
+		DecodedJWT decodedAccessToken = JWTUtil.getInstance().verifyAccessToken(accessToken);
+		
+		return decodedAccessToken;
+	}
+
+	private DecodedJWT verifyRefreshToken(String refreshToken) {
+		DecodedJWT decodedRefreshToken = JWTUtil.getInstance().verifyRefreshToken(refreshToken);
+		return decodedRefreshToken;
 	}
 
 }

@@ -51,6 +51,7 @@ public class AppInitializer implements ServletContextListener {
 
 		context.setAttribute("objectMapper", objectMapper);
 		context.setAttribute("authenticationService", authenticationService);
+		
 
 	}
 
